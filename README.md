@@ -1,4 +1,16 @@
-# statsd-jvm-profiler [![Build Status](https://travis-ci.org/etsy/statsd-jvm-profiler.svg)](https://travis-ci.org/etsy/statsd-jvm-profiler)
+# statsd-jvm-profiler - a foreword by Ihor Bobak
+
+Hi, everyone. My name is Ihor Bobak, I created a mod of a famous statsd-jvm-profiler which you can find in this repository. Below are first my comments, then you may read original text of the authors of StatsD JVM Profiler.
+
+## List of My Changes
+
+1. Profiler adds the jvmName tag to each stacktrace;
+2. Optimized performance;
+3. Added catching mechanizm for OutOfMemoryException which should not allow the profiler to fail;
+4. added statistics which shows how many lines and characters we are passing to the backend (to track if OOM appears);
+5. Fixed the influxdb_dump.py: now it extracts data into a set of distinct files - one file for each JVM. 
+
+# ORIGINAL TEXT - statsd-jvm-profiler [![Build Status](https://travis-ci.org/etsy/statsd-jvm-profiler.svg)](https://travis-ci.org/etsy/statsd-jvm-profiler)
 
 statsd-jvm-profiler is a JVM agent profiler that sends profiling data to StatsD.  Inspired by [riemann-jvm-profiler](https://github.com/riemann/riemann-jvm-profiler), it was primarily built for profiling Hadoop jobs, but can be used with any JVM process.
 
