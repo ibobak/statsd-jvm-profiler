@@ -1,5 +1,6 @@
 package com.etsy.statsd.profiler.util;
 
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class CPUTraces {
      * @param inc The value by which to increment the aggregate time for the trace
      */
     public void increment(String traceKey, long inc) {
+        // Ihor Bobak: we shouldn't pass here anything that doesn't begin with "cpu.trace"
+        Preconditions.checkArgument(traceKey.startsWith("cpu.trace."));
         MapUtil.setOrIncrementMap(traces, traceKey, inc);
         updateBounds(traceKey);
     }
@@ -48,9 +51,34 @@ public class CPUTraces {
         return new Range(min, max);
     }
 
+    /**
+     * Returns the size of the traces
+     *
+     * @return
+     */
+    public int size() {
+        return traces.size();
+    }
+
+    /**
+     * Returns the number of characters in all the keys of the internal hashmap
+     *
+     * @return
+     */
+    public long sizeInChars() {
+        long totalLen = 0;
+        for (String key: traces.keySet())
+            totalLen += key.length();
+        return totalLen;
+    }
+
     private void updateBounds(String traceKey) {
-        int numComponents = traceKey.split("\\.").length;
-        max = Math.max(max, numComponents);
-        min = Math.min(min, numComponents);
+        int numComponents = 1; // Ihor Bobak: the number of components equals the number of dots + 1
+        int len = traceKey.length();
+        for (int i = 0; i < len; ++i)
+            if (traceKey.charAt(i) == '.')
+                numComponents++;
+        max = Math.max(max, numComponents - 2);  // Ihor Bobak:  remember that traceKey contains "cpu.trace" prefix
+        min = Math.min(min, numComponents - 2);
     }
 }

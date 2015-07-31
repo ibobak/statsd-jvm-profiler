@@ -9,7 +9,10 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +23,8 @@ import java.util.concurrent.TimeUnit;
  * @author Andrew Johnson
  */
 public class InfluxDBReporter extends Reporter<InfluxDB> {
+    private static Logger LOG = LoggerFactory.getLogger(InfluxDBReporter.class);
+
     public static final String VALUE_COLUMN = "value";
     public static final String USERNAME_ARG = "username";
     public static final String PASSWORD_ARG = "password";
@@ -39,6 +44,27 @@ public class InfluxDBReporter extends Reporter<InfluxDB> {
         // If we have a tag mapping it must match the number of components of the prefix
         Preconditions.checkArgument(tagMapping == null || tagMapping.split("\\.").length == prefix.split("\\.").length);
         tags = TagUtil.getTags(tagMapping, prefix);
+
+        // Ihor Bobak:
+        // This is the way to separate data by the JVM ID, which is usually in the format  ID@hostname
+        final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+        tags.put("jvmName", jvmName);
+        int atIndex = jvmName.indexOf("@");
+        if (atIndex > 0)
+        {
+            tags.put("pid", jvmName.substring(0, atIndex));
+            tags.put("host", jvmName.substring(atIndex + 1));
+        }
+        else {
+            tags.put("pid", jvmName);
+            tags.put("host", "unknown");
+        }
+
+        // TODO: find the way how to recognize by the command line parameters WHAT IS IS THIS:  is this a container, or appmaster, or zookeeper, or... what?
+        // tags.put("recognizedType", !!! THE TYPE OF PROCESS YOU RECOGNIZED !!!);
+        // TODO: and also try to recognize the name of the job - if this is a hadoop job
+        // tags.put("recognizedJobID",  job_1437758498951_0001);
+        // tags.put("recognizedJobName",  THE_NAME_WHICH_YOU_GAVE_THE_JOB);
     }
 
     /**
@@ -60,13 +86,26 @@ public class InfluxDBReporter extends Reporter<InfluxDB> {
      */
     @Override
     public void recordGaugeValues(Map<String, Long> gauges) {
+        // Ihor Bobak: a piece of optimization
+        if (gauges.size() == 0)
+            return;
         long time = System.currentTimeMillis();
-        BatchPoints batchPoints = BatchPoints.database(database)
-                .build();
-        for (Map.Entry<String, Long> gauge: gauges.entrySet()) {
-            batchPoints.point(constructPoint(time, gauge.getKey(), gauge.getValue()));
+        BatchPoints batchPoints = BatchPoints.database(database).build();
+        try{
+            for (Map.Entry<String, Long> gauge: gauges.entrySet()) {
+                batchPoints.point(constructPoint(time, gauge.getKey(), gauge.getValue()));
+            }
         }
-        client.write(batchPoints);
+        catch (OutOfMemoryError ex){
+            LOG.error("InfluxDBReporter.recordGaugeValues OutOfMemory failure at construction of batch points", ex);
+        }
+
+        try {
+            client.write(batchPoints);
+        }
+        catch (OutOfMemoryError ex){
+            LOG.error("InfluxDBReporter.recordGaugeValues OutOfMemory failure at client.write", ex);
+        }
     }
 
     /**

@@ -29,10 +29,12 @@ public class StackTraceFormatter {
      */
     public static String formatStackTrace(StackTraceElement[] stack) {
         List<String> lines = new ArrayList<>();
+        // Ihor Bobak: add this prefix in the beginning - to avoid creation of the same table twice
+        lines.add("cpu");
+        lines.add("trace");
         for (StackTraceElement element : stack) {
             lines.add(formatStackTraceElement(element));
         }
-
         return Joiner.on(".").join(lines);
     }
 }

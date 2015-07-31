@@ -35,6 +35,8 @@ public class StatsDReporter extends Reporter<StatsDClient> {
      */
     @Override
     public void recordGaugeValues(Map<String, Long> gauges) {
+        if (gauges.size() == 0)
+            return;
         for (Map.Entry<String, Long> gauge : gauges.entrySet()) {
             recordGaugeValue(gauge.getKey(), gauge.getValue());
         }

@@ -20,10 +20,12 @@ public class StackTraceFilter {
 
     private Pattern includePattern;
     private Pattern excludePattern;
+    private boolean arePatternsDefault = false; // Ihor Bobak:  to speed up in the case if both are empty
 
     public StackTraceFilter(List<String> includePackages, List<String> excludePackages) {
         includePattern = getPackagePattern(includePackages, MATCH_EVERYTHING);
         excludePattern = getPackagePattern(excludePackages, MATCH_NOTHING);
+        arePatternsDefault = includePattern == MATCH_EVERYTHING && excludePattern == MATCH_NOTHING;
     }
 
     /**
@@ -34,6 +36,8 @@ public class StackTraceFilter {
      * @return True if it should be included, false otherwise
      */
     public boolean includeStackTrace(String formattedStackTrace) {
+        if (arePatternsDefault)
+            return true;
         return includeMatches(formattedStackTrace) && !excludeMatches(formattedStackTrace);
     }
 
