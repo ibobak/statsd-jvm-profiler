@@ -2,6 +2,8 @@
 
 Hi, everyone. My name is Ihor Bobak, I created a mod of a famous statsd-jvm-profiler which you can find in this repository. Below are first my comments, then you may read original text of the authors of StatsD JVM Profiler.
 
+Here http://ihorbobak.com/index.php/2015/08/05/cluster-profiling/ you may find my article that describes how to use it in details.
+
 ## List of My Changes
 
 1. Profiler adds the jvmName tag to each stacktrace;
