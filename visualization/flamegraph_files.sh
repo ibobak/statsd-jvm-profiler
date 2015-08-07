@@ -1,5 +1,5 @@
 #!/bin/bash
-FILES=tr_*
+FILES=tr*.txt
 for f in $FILES
 do
     echo "Processing $f.svg file..."

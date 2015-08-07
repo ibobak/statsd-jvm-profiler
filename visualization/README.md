@@ -6,6 +6,7 @@ Option | Meaning
 -------|--------
 -x     | The prefix for the generated files
 -f     | File with filtering lines, i.e. if any of the lines (from this file) is met in the stacktrace - it won't go to the output.
+-s     | Sort order of methods. 0 means "sort by methodname:linenumber", 1 means "sort by linenumber:methodname". 0 is default.
 
 
 The basic options are:

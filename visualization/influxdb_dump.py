@@ -6,7 +6,7 @@ import sys
 import re
 
 class InfluxDBDump:
-    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, file_prefix):
+    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, file_prefix, sort_order):
         self.host = host
         self.port = port
         self.username = username
@@ -14,6 +14,7 @@ class InfluxDBDump:
         self.database = database
         self.prefix = prefix
         self.tag_mapping = tag_mapping
+        self.sort_order = sort_order
         self.client = InfluxDBClient(self.host, self.port, self.username, self.password, self.database)
         self.mapped_tags = self._construct_tag_mapping(prefix, tag_mapping)
         # read the filter file and compose a set of strings which should be excluded when exported
@@ -110,8 +111,13 @@ class InfluxDBDump:
         line_numbers = []
         for r in reverse:
             split_list = r.rsplit('-', 1)
+            if split_list[0][-1:] == '-':
+                split_list[0]  = split_list[0][:-1]
             split_list[1] = split_list[1].zfill(4)
-            s = ':'.join(split_list)
+            if self.sort_order == "0":
+                s = ':'.join(split_list)
+            else:
+                s = split_list[1] + ':' + split_list[0]
             line_numbers.append(s)
         return ';'.join(line_numbers).replace('-', '.')
 
@@ -141,6 +147,7 @@ def get_arg_parser():
     parser.add_option('-t', '--tag-mapping', dest='mapping', help='Tag mapping for metric prefix', metavar='MAPPING')
     parser.add_option('-f', '--filter', dest='filter', help='Filter for strings (list of strings which WON''T go into the output)', metavar='FILTER')
     parser.add_option('-x', '--fileprefix', dest='fileprefix', help='File Prefix', metavar='FILEPREFIX')
+    parser.add_option('-s', '--sortorder', dest='sortorder', help='Sort Order: 0 (default) = by names, 1 = by linenumbers', metavar='FILEPREFIX')
     return parser
 
 if __name__ == '__main__':
@@ -153,5 +160,6 @@ if __name__ == '__main__':
     tag_mapping = args.mapping or None
     filter_filename = args.filter or None
     file_prefix = args.fileprefix or ""
-    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, file_prefix)
+    sort_order = args.sortorder or "0"
+    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, file_prefix, sort_order)
     dumper.run()
