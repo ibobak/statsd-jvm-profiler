@@ -1,5 +1,7 @@
 # Additions by Ihor Bobak
 
+## influxdb_dump.py
+
 I added two more options to the influxdb_dump.py:
 
 Option | Meaning
@@ -63,6 +65,43 @@ done
 ```
 
 Note: there is one more little file - filterlines.py - which does the filtering as well, but it filters the text file. It is preferable to use this filtering of result files instead of filtering in the SQL call of influxdb_dump.py,  because operations on InfluxDB take longer time. 
+
+## call_tree.py
+
+This script can transform the result obtained from  influxdb_dump.py into a text file with a hierarchical output of the called methods.
+
+E.g. if you have some stacktraces:
+```
+A->B->C
+A->B->C->D
+A->B->E
+A->X->Y
+```
+
+which are notated in the output from influxdb_dump.py as
+```
+A;B;C 1
+A;B;C;D 1
+A;B;E 1
+A;X;Y 1
+```
+
+then the call of 
+```
+call_tree.py -p ".*B.*" inputfile.txt
+```
+
+will output
+
+```
+A
+ B
+  C
+   D
+  E
+```
+so that the result will be the tree of all stacktraces that contained the "B" substring (matches by regular expression).
+
 
 # ORIGINAL TEXT OF THE AUTHOR
 

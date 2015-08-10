@@ -1,0 +1,1 @@
+FOR %%i IN (tr*.txt) DO  python filterlines.py -f filter.txt %%i |  perl flamegraph.pl > %%i.svg
