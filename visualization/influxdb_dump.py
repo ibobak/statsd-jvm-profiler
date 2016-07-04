@@ -8,7 +8,7 @@ import os
 import shutil
 
 class InfluxDBDump:
-    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, out_dir, sort_order):
+    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, out_dir, sort_order, start_time, end_time):
         self.host = host
         self.port = port
         self.username = username
@@ -22,6 +22,11 @@ class InfluxDBDump:
         # read the filter file and compose a set of strings which should be excluded when exported
         self.filter_exclude = set()
         self.out_dir = out_dir
+        self.extra_clauses = []
+        if start_time:
+            self.extra_clauses += ["time >= '%s'" % start_time]
+        if end_time:
+            self.extra_clauses += ["time <= '%s'" % end_time]
         if filter_filename:
             with open(filter_filename) as f:
                 for s in f:
@@ -43,7 +48,7 @@ class InfluxDBDump:
 
     def output_to_file(self, out_filename, tags):
         print "=== Making file %s" % out_filename
-        clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+        clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()] + self.extra_clauses
         query = 'select value from /^cpu.trace.*/ where %s' % " and ".join(clauses)
         print "running query: %s" % query
         metrics = self.client.query(query)
@@ -100,7 +105,7 @@ class InfluxDBDump:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
             tags["jvmName"] = jvm
-            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()] + self.extra_clauses
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % jvm
             print "running query: %s" % query
@@ -116,7 +121,7 @@ class InfluxDBDump:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
             tags["host"] = host
-            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()] + self.extra_clauses
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % host
             print "running query: %s" % query
@@ -130,7 +135,7 @@ class InfluxDBDump:
         for host in hosts:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
-            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()] + self.extra_clauses
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== ALL ======== "
             print "running query: %s" % query
@@ -187,6 +192,8 @@ def get_arg_parser():
     parser.add_option('-f', '--filter', dest='filter', help='Filter for strings (list of strings which WON''T go into the output)', metavar='FILTER')
     parser.add_option('-x', '--outputdir', dest='outputdir', help='File Prefix', metavar='FILEPREFIX')
     parser.add_option('-s', '--sortorder', dest='sortorder', help='Sort Order: 0 (default) = by names, 1 = by linenumbers, 2 = skip linenumbers', metavar='FILEPREFIX')
+    parser.add_option('--start-time', dest='start_time', help='Start time of format 2000-01-01T00:00:00Z', metavar='START_TIME')
+    parser.add_option('--end-time', dest='end_time', help='End time of format 2000-01-01T00:00:00Z', metavar='END_TIME')
     return parser
 
 if __name__ == '__main__':
@@ -200,5 +207,8 @@ if __name__ == '__main__':
     filter_filename = args.filter or None
     out_dir = args.outputdir or ""
     sort_order = args.sortorder or "0"
-    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order)
+    start_time = args.start_time or None
+    end_time = args.end_time or None
+
+    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order, start_time, end_time)
     dumper.run()
