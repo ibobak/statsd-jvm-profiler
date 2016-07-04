@@ -29,17 +29,18 @@ class InfluxDBDump:
 
     def get_tag_values(self, tagname):
         result = []
-        query = "SHOW TAG VALUES FROM \"cpu.stats.size\" WITH KEY = \"" + tagname +"\""
+        query = "SHOW TAG VALUES FROM \"heap.total.max\" WITH KEY = \"" + tagname +"\""
+        print "running query: %s" % query
         items = self.client.query(query).raw['series'][0]['values']
         for item in items:
-            result.append(item[0])
+            result.append(item[1])
         return result
 
     def get_jvms(self):
         return self.get_tag_values("jvmName")
 
     def get_hosts(self):
-        return self.get_tag_values("host")
+        return self.get_tag_values("hostname")
 
     def output_to_file(self, out_filename, tags):
         print "=== Making file %s" % out_filename
@@ -101,7 +102,7 @@ class InfluxDBDump:
             tags = dict(self.mapped_tags)
             tags["jvmName"] = jvm
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
+            query = 'select value from "heap.total.max" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % jvm
             print "running query: %s" % query
             date = self.client.query(query).raw['series'][0]['values'][0][0]
@@ -115,9 +116,9 @@ class InfluxDBDump:
         for host in hosts:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
-            tags["host"] = host
+            tags["hostname"] = host
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
+            query = 'select value from "heap.total.max" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % host
             print "running query: %s" % query
             date = self.client.query(query).raw['series'][0]['values'][0][0]
@@ -131,7 +132,7 @@ class InfluxDBDump:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
+            query = 'select value from "heap.total.max" where %s limit 1' % " and ".join(clauses)
             print "======== ALL ======== "
             print "running query: %s" % query
             date = self.client.query(query).raw['series'][0]['values'][0][0]
