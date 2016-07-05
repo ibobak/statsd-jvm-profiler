@@ -126,18 +126,16 @@ class InfluxDBDump:
             print ""
 
         # dump everything
-        hosts = self.get_hosts()
-        for host in hosts:
-            # run a query to find out the date and time when measurements were started
-            tags = dict(self.mapped_tags)
-            clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
-            print "======== ALL ======== "
-            print "running query: %s" % query
-            date = self.client.query(query).raw['series'][0]['values'][0][0]
-            filename = os.path.join(self.out_dir, "all_" + non_gidit.sub('_', str(date)) + ".txt")
-            self.output_to_file(filename, tags)
-            print ""
+        # run a query to find out the date and time when measurements were started
+        tags = dict(self.mapped_tags)
+        clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+        query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
+        print "======== ALL ======== "
+        print "running query: %s" % query
+        date = self.client.query(query).raw['series'][0]['values'][0][0]
+        filename = os.path.join(self.out_dir, "all_" + non_gidit.sub('_', str(date)) + ".txt")
+        self.output_to_file(filename, tags)
+        print ""
 
 
     def _format_metric_name(self, name, prefix):
