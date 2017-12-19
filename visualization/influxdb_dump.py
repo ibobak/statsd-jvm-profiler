@@ -7,6 +7,8 @@ import re
 import os
 import shutil
 
+TIME_FROM = '2017-10-13 11:00:00'
+
 class InfluxDBDump:
     def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, out_dir, sort_order):
         self.host = host
@@ -41,9 +43,38 @@ class InfluxDBDump:
     def get_hosts(self):
         return self.get_tag_values("host")
 
-    def output_to_file(self, out_filename, tags):
-        print "=== Making file %s" % out_filename
+    def memory_output_to_file(self, out_filename, tags):
+        print "=== MEMORY: Making file %s" % out_filename
         clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+        clauses.append("time >= '%s'" % TIME_FROM)
+        groups = [('Heap', '^heap.total'),
+                    ('Non Heap', '^nonheap.total'),
+                    ('Pending Finalization Count', '^pending-finalization-count$'),
+                    ('GC', '^gc.'),
+                    ("Class Count", "-class-count$")]
+
+        with open(out_filename, "w") as f:
+            for group in groups:
+                query = 'select value from /%s.*/ where %s' % (group[1], " and ".join(clauses))
+                print "running query: %s" % query
+                resultset = self.client.query(query)
+                try:
+                    series = resultset.raw['series']
+                except KeyError:
+                    print "got an empty recordset"
+                    continue
+                for metric in series:
+                    for item in metric['values']:
+                        sdate = item[0]
+                        f.write("%s\t%s\t%s\t%s\n" % (group[0], metric['name'], sdate[0:10] + ' ' + sdate[11:19], item[1]))
+        # if the file is empty because no data is for any metric - remove this file, we won't need it
+        if os.path.isfile(out_filename) & (os.path.getsize(out_filename) == 0):
+            os.remove(out_filename)
+
+    def cpu_output_to_file(self, out_filename, tags):
+        print "=== CPU: Making file %s" % out_filename
+        clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+        clauses.append("time >= '%s'" % TIME_FROM)
         query = 'select value from /^cpu.trace.*/ where %s' % " and ".join(clauses)
         print "running query: %s" % query
         metrics = self.client.query(query)
@@ -101,14 +132,21 @@ class InfluxDBDump:
             tags = dict(self.mapped_tags)
             tags["jvmName"] = jvm
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses.append("time >= '%s'" % TIME_FROM)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % jvm
             print "running query: %s" % query
-            date = self.client.query(query).raw['series'][0]['values'][0][0]
-            filename = os.path.join(self.out_dir, "jvm_" + non_gidit.sub('_', str(date)) + "_" + non_filename.sub('_', str(host)) + \
-                       "_" + non_filename.sub('_', str(pid))  + ".txt")
-            self.output_to_file(filename, tags)
-            print ""
+            date = None
+            try:
+                date = self.client.query(query).raw['series'][0]['values'][0][0]
+            except KeyError:
+                print("jvm %s was not found in the time >= %s" % (jvm, TIME_FROM))
+            if date:
+                filename_pattern = os.path.join(self.out_dir, "%s_jvm_" + non_gidit.sub('_', str(date)) + "_" + non_filename.sub('_', str(host)) + \
+                    "_" + non_filename.sub('_', str(pid))  + ".txt")
+                self.cpu_output_to_file(filename_pattern % "cpu", tags)
+                self.memory_output_to_file(filename_pattern % "memory", tags)
+                print ""
 
         # dump files for every host
         hosts = self.get_hosts()
@@ -117,12 +155,14 @@ class InfluxDBDump:
             tags = dict(self.mapped_tags)
             tags["host"] = host
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses.append("time >= '%s'" % TIME_FROM)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % host
             print "running query: %s" % query
             date = self.client.query(query).raw['series'][0]['values'][0][0]
-            filename = os.path.join(self.out_dir, "host_" + non_gidit.sub('_', str(date)) + "_" + non_filename.sub('_', str(host)) + ".txt")
-            self.output_to_file(filename, tags)
+            filename_pattern = os.path.join(self.out_dir, "%s_host_" + non_gidit.sub('_', str(date)) + "_" + non_filename.sub('_', str(host)) + ".txt")
+            self.cpu_output_to_file(filename_pattern % "cpu", tags)
+            self.memory_output_to_file(filename_pattern % "memory", tags)
             print ""
 
         # dump everything
@@ -131,12 +171,14 @@ class InfluxDBDump:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
+            clauses.append("time >= '%s'" % TIME_FROM)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== ALL ======== "
             print "running query: %s" % query
             date = self.client.query(query).raw['series'][0]['values'][0][0]
-            filename = os.path.join(self.out_dir, "all_" + non_gidit.sub('_', str(date)) + ".txt")
-            self.output_to_file(filename, tags)
+            filename_pattern = os.path.join(self.out_dir, "%s_all_" + non_gidit.sub('_', str(date)) + ".txt")
+            self.cpu_output_to_file(filename_pattern % "cpu", tags)
+			self.memory_output_to_file(filename_pattern % "memory", tags)
             print ""
 
 
