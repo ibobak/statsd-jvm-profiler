@@ -178,7 +178,7 @@ class InfluxDBDump:
             date = self.client.query(query).raw['series'][0]['values'][0][0]
             filename_pattern = os.path.join(self.out_dir, "%s_all_" + non_gidit.sub('_', str(date)) + ".txt")
             self.cpu_output_to_file(filename_pattern % "cpu", tags)
-			self.memory_output_to_file(filename_pattern % "memory", tags)
+            self.memory_output_to_file(filename_pattern % "memory", tags)
             print ""
 
 
