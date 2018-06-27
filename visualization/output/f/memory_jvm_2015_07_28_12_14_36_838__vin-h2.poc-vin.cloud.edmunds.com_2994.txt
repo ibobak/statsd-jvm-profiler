@@ -1,0 +1,162 @@
+Heap	heap.total.committed	2015-07-28 12:14:26	548405248
+Heap	heap.total.committed	2015-07-28 12:14:36	560988160
+Heap	heap.total.committed	2015-07-28 12:14:46	563085312
+Heap	heap.total.committed	2015-07-28 12:14:56	563085312
+Heap	heap.total.committed	2015-07-28 12:15:06	563085312
+Heap	heap.total.committed	2015-07-28 12:15:16	563085312
+Heap	heap.total.committed	2015-07-28 12:15:26	563085312
+Heap	heap.total.committed	2015-07-28 12:15:36	563085312
+Heap	heap.total.committed	2015-07-28 12:15:49	552075264
+Heap	heap.total.init	2015-07-28 12:14:26	571623232
+Heap	heap.total.init	2015-07-28 12:14:36	571623232
+Heap	heap.total.init	2015-07-28 12:14:46	571623232
+Heap	heap.total.init	2015-07-28 12:14:56	571623232
+Heap	heap.total.init	2015-07-28 12:15:06	571623232
+Heap	heap.total.init	2015-07-28 12:15:16	571623232
+Heap	heap.total.init	2015-07-28 12:15:26	571623232
+Heap	heap.total.init	2015-07-28 12:15:36	571623232
+Heap	heap.total.init	2015-07-28 12:15:49	571623232
+Heap	heap.total.max	2015-07-28 12:14:26	559415296
+Heap	heap.total.max	2015-07-28 12:14:36	560988160
+Heap	heap.total.max	2015-07-28 12:14:46	563085312
+Heap	heap.total.max	2015-07-28 12:14:56	563085312
+Heap	heap.total.max	2015-07-28 12:15:06	563085312
+Heap	heap.total.max	2015-07-28 12:15:16	563085312
+Heap	heap.total.max	2015-07-28 12:15:26	563085312
+Heap	heap.total.max	2015-07-28 12:15:36	563085312
+Heap	heap.total.max	2015-07-28 12:15:49	559415296
+Heap	heap.total.used	2015-07-28 12:14:26	48885296
+Heap	heap.total.used	2015-07-28 12:14:36	164981472
+Heap	heap.total.used	2015-07-28 12:14:46	149553992
+Heap	heap.total.used	2015-07-28 12:14:56	156602768
+Heap	heap.total.used	2015-07-28 12:15:06	162262120
+Heap	heap.total.used	2015-07-28 12:15:16	162490424
+Heap	heap.total.used	2015-07-28 12:15:26	163337432
+Heap	heap.total.used	2015-07-28 12:15:36	164488648
+Heap	heap.total.used	2015-07-28 12:15:49	29679288
+Non Heap	nonheap.total.committed	2015-07-28 12:14:26	24576000
+Non Heap	nonheap.total.committed	2015-07-28 12:14:36	46071808
+Non Heap	nonheap.total.committed	2015-07-28 12:14:46	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:14:56	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:15:06	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:15:16	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:15:26	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:15:36	52887552
+Non Heap	nonheap.total.committed	2015-07-28 12:15:49	53411840
+Non Heap	nonheap.total.init	2015-07-28 12:14:26	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:14:36	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:14:46	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:14:56	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:15:06	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:15:16	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:15:26	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:15:36	24576000
+Non Heap	nonheap.total.init	2015-07-28 12:15:49	24576000
+Non Heap	nonheap.total.max	2015-07-28 12:14:26	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:14:36	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:14:46	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:14:56	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:15:06	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:15:16	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:15:26	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:15:36	136314880
+Non Heap	nonheap.total.max	2015-07-28 12:15:49	136314880
+Non Heap	nonheap.total.used	2015-07-28 12:14:26	6728168
+Non Heap	nonheap.total.used	2015-07-28 12:14:36	45637856
+Non Heap	nonheap.total.used	2015-07-28 12:14:46	52222216
+Non Heap	nonheap.total.used	2015-07-28 12:14:56	52278520
+Non Heap	nonheap.total.used	2015-07-28 12:15:06	52383416
+Non Heap	nonheap.total.used	2015-07-28 12:15:16	52388824
+Non Heap	nonheap.total.used	2015-07-28 12:15:26	52391968
+Non Heap	nonheap.total.used	2015-07-28 12:15:36	52391208
+Non Heap	nonheap.total.used	2015-07-28 12:15:49	53075632
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:14:26	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:14:36	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:14:46	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:14:56	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:15:06	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:15:16	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:15:26	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:15:36	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 12:15:49	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:14:26	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:14:36	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:14:46	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:14:56	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:15:06	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:15:16	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:15:26	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:15:36	0
+GC	gc.PS_MarkSweep.count	2015-07-28 12:15:49	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:14:26	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:14:36	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:14:46	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:14:56	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:15:06	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:15:16	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:15:26	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:15:36	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 12:15:49	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:14:26	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:14:36	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:14:46	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:14:56	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:15:06	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:15:16	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:15:26	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:15:36	0
+GC	gc.PS_MarkSweep.time	2015-07-28 12:15:49	0
+GC	gc.PS_Scavenge.count	2015-07-28 12:14:26	0
+GC	gc.PS_Scavenge.count	2015-07-28 12:14:36	5
+GC	gc.PS_Scavenge.count	2015-07-28 12:14:46	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:14:56	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:15:06	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:15:16	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:15:26	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:15:36	6
+GC	gc.PS_Scavenge.count	2015-07-28 12:15:49	7
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:14:26	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:14:36	98
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:14:46	25
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:14:56	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:15:06	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:15:16	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:15:26	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:15:36	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 12:15:49	31
+GC	gc.PS_Scavenge.time	2015-07-28 12:14:26	0
+GC	gc.PS_Scavenge.time	2015-07-28 12:14:36	98
+GC	gc.PS_Scavenge.time	2015-07-28 12:14:46	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:14:56	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:15:06	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:15:16	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:15:26	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:15:36	123
+GC	gc.PS_Scavenge.time	2015-07-28 12:15:49	154
+Class Count	loaded-class-count	2015-07-28 12:14:26	1103
+Class Count	loaded-class-count	2015-07-28 12:14:36	6805
+Class Count	loaded-class-count	2015-07-28 12:14:46	8255
+Class Count	loaded-class-count	2015-07-28 12:14:56	8268
+Class Count	loaded-class-count	2015-07-28 12:15:06	8283
+Class Count	loaded-class-count	2015-07-28 12:15:16	8283
+Class Count	loaded-class-count	2015-07-28 12:15:26	8283
+Class Count	loaded-class-count	2015-07-28 12:15:36	8283
+Class Count	loaded-class-count	2015-07-28 12:15:49	8361
+Class Count	total-loaded-class-count	2015-07-28 12:14:26	1103
+Class Count	total-loaded-class-count	2015-07-28 12:14:36	6805
+Class Count	total-loaded-class-count	2015-07-28 12:14:46	8255
+Class Count	total-loaded-class-count	2015-07-28 12:14:56	8268
+Class Count	total-loaded-class-count	2015-07-28 12:15:06	8283
+Class Count	total-loaded-class-count	2015-07-28 12:15:16	8283
+Class Count	total-loaded-class-count	2015-07-28 12:15:26	8283
+Class Count	total-loaded-class-count	2015-07-28 12:15:36	8283
+Class Count	total-loaded-class-count	2015-07-28 12:15:49	8361
+Class Count	unloaded-class-count	2015-07-28 12:14:26	0
+Class Count	unloaded-class-count	2015-07-28 12:14:36	0
+Class Count	unloaded-class-count	2015-07-28 12:14:46	0
+Class Count	unloaded-class-count	2015-07-28 12:14:56	0
+Class Count	unloaded-class-count	2015-07-28 12:15:06	0
+Class Count	unloaded-class-count	2015-07-28 12:15:16	0
+Class Count	unloaded-class-count	2015-07-28 12:15:26	0
+Class Count	unloaded-class-count	2015-07-28 12:15:36	0
+Class Count	unloaded-class-count	2015-07-28 12:15:49	0

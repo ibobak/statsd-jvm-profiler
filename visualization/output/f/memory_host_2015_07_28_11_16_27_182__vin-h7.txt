@@ -1,0 +1,36 @@
+Heap	heap.total.committed	2015-07-28 11:16:25	548405248
+Heap	heap.total.committed	2015-07-28 11:16:25	548405248
+Heap	heap.total.init	2015-07-28 11:16:25	571623232
+Heap	heap.total.init	2015-07-28 11:16:25	571623232
+Heap	heap.total.max	2015-07-28 11:16:25	8131706880
+Heap	heap.total.max	2015-07-28 11:16:25	8131706880
+Heap	heap.total.used	2015-07-28 11:16:25	17246352
+Heap	heap.total.used	2015-07-28 11:16:25	51758424
+Non Heap	nonheap.total.committed	2015-07-28 11:16:25	24576000
+Non Heap	nonheap.total.committed	2015-07-28 11:16:25	24576000
+Non Heap	nonheap.total.init	2015-07-28 11:16:25	24576000
+Non Heap	nonheap.total.init	2015-07-28 11:16:25	24576000
+Non Heap	nonheap.total.max	2015-07-28 11:16:25	136314880
+Non Heap	nonheap.total.max	2015-07-28 11:16:25	136314880
+Non Heap	nonheap.total.used	2015-07-28 11:16:25	5759784
+Non Heap	nonheap.total.used	2015-07-28 11:16:25	13042056
+Pending Finalization Count	pending-finalization-count	2015-07-28 11:16:25	0
+Pending Finalization Count	pending-finalization-count	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.count	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.count	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.runtime	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.time	2015-07-28 11:16:25	0
+GC	gc.PS_MarkSweep.time	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.count	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.count	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.runtime	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.time	2015-07-28 11:16:25	0
+GC	gc.PS_Scavenge.time	2015-07-28 11:16:25	0
+Class Count	loaded-class-count	2015-07-28 11:16:25	924
+Class Count	loaded-class-count	2015-07-28 11:16:25	2178
+Class Count	total-loaded-class-count	2015-07-28 11:16:25	925
+Class Count	total-loaded-class-count	2015-07-28 11:16:25	2178
+Class Count	unloaded-class-count	2015-07-28 11:16:25	0
+Class Count	unloaded-class-count	2015-07-28 11:16:25	0

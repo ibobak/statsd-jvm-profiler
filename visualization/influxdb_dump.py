@@ -7,10 +7,44 @@ import re
 import os
 import shutil
 
-TIME_FROM = '2017-10-13 11:00:00'
-
 class InfluxDBDump:
-    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, out_dir, sort_order):
+    def format_metric_name(self, name, prefix):
+        tokens = name.replace(prefix, '').split('.')
+        reverse = reversed(tokens)
+        # line_numbers = [':'.join(r.rsplit('-', 1)) for r in reverse]
+        line_numbers = []
+        for r in reverse:
+            split_list = r.rsplit('-', 1)
+            if split_list[0][-1:] == '-':
+                split_list[0]  = split_list[0][:-1]
+            split_list[1] = split_list[1].zfill(4)
+            if self.sort_order == "0":
+                s = ':'.join(split_list)
+            elif self.sort_order == "1":
+                s = split_list[1] + ':' + split_list[0]
+            elif self.sort_order == "2":
+                s = split_list[0]
+            line_numbers.append(s)
+        return ';'.join(line_numbers).replace('-', '.')
+
+
+    def construct_tag_mapping(self, prefix, tag_mapping):
+        mapped_tags = {}
+        if tag_mapping:
+            tag_names = tag_mapping.split('.')
+            prefix_components = prefix.split('.')
+            if len(tag_names) != len(prefix_components):
+                raise Exception('Invalid tag mapping %s' % tag_mapping)
+            zipped = zip(tag_names, prefix_components)
+            for entry in zipped:
+                if entry[0] != 'SKIP':
+                    mapped_tags[entry[0]] = entry[1]
+        else:
+            mapped_tags['prefix'] = prefix
+        return mapped_tags
+
+
+    def __init__(self, host, port, username, password, database, prefix, tag_mapping, filter_filename, out_dir, sort_order, begin_time):
         self.host = host
         self.port = port
         self.username = username
@@ -20,10 +54,11 @@ class InfluxDBDump:
         self.tag_mapping = tag_mapping
         self.sort_order = sort_order
         self.client = InfluxDBClient(self.host, self.port, self.username, self.password, self.database)
-        self.mapped_tags = self._construct_tag_mapping(prefix, tag_mapping)
+        self.mapped_tags = self.construct_tag_mapping(prefix, tag_mapping)
         # read the filter file and compose a set of strings which should be excluded when exported
         self.filter_exclude = set()
         self.out_dir = out_dir
+        self.begin_time = begin_time
         if filter_filename:
             with open(filter_filename) as f:
                 for s in f:
@@ -46,7 +81,8 @@ class InfluxDBDump:
     def memory_output_to_file(self, out_filename, tags):
         print "=== MEMORY: Making file %s" % out_filename
         clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-        clauses.append("time >= '%s'" % TIME_FROM)
+        if self.begin_time:
+            clauses.append("time >= '%s'" % self.begin_time)
         groups = [('Heap', '^heap.total'),
                     ('Non Heap', '^nonheap.total'),
                     ('Pending Finalization Count', '^pending-finalization-count$'),
@@ -74,7 +110,8 @@ class InfluxDBDump:
     def cpu_output_to_file(self, out_filename, tags):
         print "=== CPU: Making file %s" % out_filename
         clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-        clauses.append("time >= '%s'" % TIME_FROM)
+        if self.begin_time:
+            clauses.append("time >= '%s'" % self.begin_time)
         query = 'select value from /^cpu.trace.*/ where %s' % " and ".join(clauses)
         print "running query: %s" % query
         metrics = self.client.query(query)
@@ -89,7 +126,7 @@ class InfluxDBDump:
         for metric in series:
             if re.match(r'cpu\.trace\.\d+', metric['name']):
                 continue
-            name = self._format_metric_name(metric['name'], 'cpu.trace.')
+            name = self.format_metric_name(metric['name'], 'cpu.trace.')
             value = sum([v[1] for v in metric['values']])
             if name in traces:
                 traces[name] = traces[name] + value
@@ -132,7 +169,8 @@ class InfluxDBDump:
             tags = dict(self.mapped_tags)
             tags["jvmName"] = jvm
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            clauses.append("time >= '%s'" % TIME_FROM)
+            if self.begin_time:
+                clauses.append("time >= '%s'" % self.begin_time)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % jvm
             print "running query: %s" % query
@@ -140,7 +178,7 @@ class InfluxDBDump:
             try:
                 date = self.client.query(query).raw['series'][0]['values'][0][0]
             except KeyError:
-                print("jvm %s was not found in the time >= %s" % (jvm, TIME_FROM))
+                print("jvm %s was not found in the time >= %s" % (jvm, self.begin_time))
             if date:
                 filename_pattern = os.path.join(self.out_dir, "%s_jvm_" + non_gidit.sub('_', str(date)) + "_" + non_filename.sub('_', str(host)) + \
                     "_" + non_filename.sub('_', str(pid))  + ".txt")
@@ -155,7 +193,8 @@ class InfluxDBDump:
             tags = dict(self.mapped_tags)
             tags["host"] = host
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            clauses.append("time >= '%s'" % TIME_FROM)
+            if self.begin_time:
+                clauses.append("time >= '%s'" % self.begin_time)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== %s ======== " % host
             print "running query: %s" % query
@@ -171,7 +210,8 @@ class InfluxDBDump:
             # run a query to find out the date and time when measurements were started
             tags = dict(self.mapped_tags)
             clauses = ["%s ='%s'" % (tag, value) for (tag, value) in tags.iteritems()]
-            clauses.append("time >= '%s'" % TIME_FROM)
+            if self.begin_time:
+                clauses.append("time >= '%s'" % self.begin_time)
             query = 'select value from "cpu.stats.size" where %s limit 1' % " and ".join(clauses)
             print "======== ALL ======== "
             print "running query: %s" % query
@@ -182,40 +222,6 @@ class InfluxDBDump:
             print ""
 
 
-    def _format_metric_name(self, name, prefix):
-        tokens = name.replace(prefix, '').split('.')
-        reverse = reversed(tokens)
-        # line_numbers = [':'.join(r.rsplit('-', 1)) for r in reverse]
-        line_numbers = []
-        for r in reverse:
-            split_list = r.rsplit('-', 1)
-            if split_list[0][-1:] == '-':
-                split_list[0]  = split_list[0][:-1]
-            split_list[1] = split_list[1].zfill(4)
-            if self.sort_order == "0":
-                s = ':'.join(split_list)
-            elif self.sort_order == "1":
-                s = split_list[1] + ':' + split_list[0]
-            elif self.sort_order == "2":
-                s = split_list[0]
-            line_numbers.append(s)
-        return ';'.join(line_numbers).replace('-', '.')
-
-    def _construct_tag_mapping(self, prefix, tag_mapping):
-        mapped_tags = {}
-        if tag_mapping:
-            tag_names = tag_mapping.split('.')
-            prefix_components = prefix.split('.')
-            if len(tag_names) != len(prefix_components):
-                raise Exception('Invalid tag mapping %s' % tag_mapping)
-            zipped = zip(tag_names, prefix_components)
-            for entry in zipped:
-                if entry[0] != 'SKIP':
-                    mapped_tags[entry[0]] = entry[1]
-        else:
-            mapped_tags['prefix'] = prefix
-        return mapped_tags
-
 
 def get_arg_parser():
     parser = OptionParser()
@@ -225,11 +231,13 @@ def get_arg_parser():
     parser.add_option('-p', '--password', dest='password', help='Password with which to connect to InfluxDB', metavar='PASSWORD')
     parser.add_option('-d', '--database', dest='database', help='InfluxDB database which contains profiler data', metavar='DB')
     parser.add_option('-e', '--prefix', dest='prefix', help='Metric prefix', metavar='PREFIX')
-    parser.add_option('-t', '--tag-mapping', dest='mapping', help='Tag mapping for metric prefix', metavar='MAPPING')
+    parser.add_option('-t', '--tag_mapping', dest='mapping', help='Tag mapping for metric prefix', metavar='MAPPING')
+    parser.add_option('-b', '--begin_time', dest='begin', help='Start time of the traces', metavar='BEGINTIME')
     parser.add_option('-f', '--filter', dest='filter', help='Filter for strings (list of strings which WON''T go into the output)', metavar='FILTER')
     parser.add_option('-x', '--outputdir', dest='outputdir', help='File Prefix', metavar='FILEPREFIX')
     parser.add_option('-s', '--sortorder', dest='sortorder', help='Sort Order: 0 (default) = by names, 1 = by linenumbers, 2 = skip linenumbers', metavar='FILEPREFIX')
     return parser
+
 
 if __name__ == '__main__':
     parser = get_arg_parser()
@@ -242,5 +250,5 @@ if __name__ == '__main__':
     filter_filename = args.filter or None
     out_dir = args.outputdir or ""
     sort_order = args.sortorder or "0"
-    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order)
+    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order, args.begin_time)
     dumper.run()
