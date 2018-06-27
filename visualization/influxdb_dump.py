@@ -232,7 +232,7 @@ def get_arg_parser():
     parser.add_option('-d', '--database', dest='database', help='InfluxDB database which contains profiler data', metavar='DB')
     parser.add_option('-e', '--prefix', dest='prefix', help='Metric prefix', metavar='PREFIX')
     parser.add_option('-t', '--tag_mapping', dest='mapping', help='Tag mapping for metric prefix', metavar='MAPPING')
-    parser.add_option('-b', '--begin_time', dest='begin', help='Start time of the traces', metavar='BEGINTIME')
+    parser.add_option('-b', '--begin_time', dest='begin_time', help='Start time of the traces', metavar='BEGINTIME')
     parser.add_option('-f', '--filter', dest='filter', help='Filter for strings (list of strings which WON''T go into the output)', metavar='FILTER')
     parser.add_option('-x', '--outputdir', dest='outputdir', help='File Prefix', metavar='FILEPREFIX')
     parser.add_option('-s', '--sortorder', dest='sortorder', help='Sort Order: 0 (default) = by names, 1 = by linenumbers, 2 = skip linenumbers', metavar='FILEPREFIX')
@@ -250,5 +250,6 @@ if __name__ == '__main__':
     filter_filename = args.filter or None
     out_dir = args.outputdir or ""
     sort_order = args.sortorder or "0"
-    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order, args.begin_time)
+    begin_time = args.begin_time or None
+    dumper = InfluxDBDump(args.host, port, args.username, args.password, args.database, args.prefix, tag_mapping, filter_filename, out_dir, sort_order, begin_time)
     dumper.run()
