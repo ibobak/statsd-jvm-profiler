@@ -1,13 +1,10 @@
+args <- commandArgs(trailingOnly = TRUE)
+filename <- args[1]
 
-setwd("D:\\Projects_BigData\\__Profiling_StatsD\\Projects\\statsd-jvm-profiler\\visualization\\output")
-filename <- "memory_jvm_2015_07_28_12_07_26_162__vin-h5.poc-vin.cloud.edmunds.com_30142.txt"
-
-# args <- commandArgs(trailingOnly = TRUE)
-# filename <- args[1]
 
 df <- read.csv(filename, sep = '\t', header = FALSE)
 colnames(df) <- c("group", "measure", "time", "value")
-df$time <- as.POSIXlt(df$time)
+df$time <- as.POSIXct(df$time)
 # str(df)
 
 library(ggplot2)
